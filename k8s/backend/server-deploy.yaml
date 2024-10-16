@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-js-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: node-js
+  template:
+    metadata:
+      labels:
+        app: node-js
+    spec:
+      containers:
+      - name: node-js
+        image: wileybattles/clicker-backend
+        resources:
+          limits:
+            memory: "356Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 4000
+        env:
+        - name: MONGO_URI
+          value: uri
