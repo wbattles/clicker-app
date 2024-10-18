@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: node-js
-        image: wileybattles/clicker-backend
+        image: wileybattles/clicker-server
         resources:
           limits:
             memory: "356Mi"
