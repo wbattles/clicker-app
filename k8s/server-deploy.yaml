@@ -23,4 +23,12 @@ spec:
         - containerPort: 4000
         env:
         - name: MONGO_URI
-          value: uri
+          value: mongo_uri
+        - name: DEBUG
+          value: "express:*"
+        readinessProbe:
+          httpGet:
+            path: /click
+            port: 4000
+          initialDelaySeconds: 15
+          periodSeconds: 5

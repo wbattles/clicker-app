@@ -7,7 +7,7 @@ export default function ClickGame() {
   const [localClickCount, setLocalClickCount] = useState(0);
 
   useEffect(() => {
-    axios.get('http://node-js-service:4000/click')
+    axios.get('/api/click')
       .then(response => {
         setClickData(response.data);
         setLocalClickCount(0);
@@ -22,7 +22,7 @@ export default function ClickGame() {
   const handleSave = () => {
     const newGlobalClicks = clickData.clickCount + localClickCount;
 
-    axios.post('http://node-js-service:4000/click/update', { clickCount: newGlobalClicks })
+    axios.post('/api/click/update', { clickCount: newGlobalClicks })
       .then(() => {
         setClickData((prevClickData) => ({ ...prevClickData, clickCount: newGlobalClicks }));
         setLocalClickCount(0);

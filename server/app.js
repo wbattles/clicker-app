@@ -10,14 +10,28 @@ var cors = require('cors');
 
 var app = express();
 
+let db;
 
-const mongoURI = process.env.MONGO_URI
+const mongoURI = process.env.MONGO_URI;
 MongoClient.connect(mongoURI)
   .then(client => {
     console.log('Connected to MongoDB');
     db = client.db('clicker-app');
+    return db.collection('clicks').updateOne(
+      {},
+      { $setOnInsert: { clickCount: 0 } },
+      { upsert: true }
+    );
+  })
+  .then(() => {
+    console.log('Click collection initialized');
   })
   .catch(err => console.error('MongoDB connection error:', err));
+
+app.use((req, res, next) => {
+  console.log('Incoming request:', req.method, req.path);
+  next();
+});
 
 app.use((req, res, next) => {
   req.db = db;
@@ -37,12 +51,14 @@ app.use(function(req, res, next) {
   next(createError(404));
 });
 
-// error handler
 app.use(function(err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  res.status(err.status || 500);
+  res.status(err.status || 500).json({
+    message: err.message,
+    error: req.app.get('env') === 'development' ? err : {}
+  });
 });
 
 module.exports = app;

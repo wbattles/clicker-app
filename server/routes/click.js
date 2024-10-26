@@ -3,16 +3,22 @@ var router = express.Router();
 
 async function getClickCount(req, res) {
   try {
-    const db = req.db
+    const db = req.db;
+    if (!db) {
+      console.error('Database not initialized');
+      return res.status(500).json({ error: 'Database not initialized' });
+    }
+
+    console.log('Fetching click count...');
     const clickEntry = await db.collection('clicks').findOne({});
+    console.log('Click entry:', clickEntry);
     
     if (clickEntry) {
       const { clickCount } = clickEntry;
-      
-      res.json({ clickCount });
-
+      return res.json({ clickCount });
     } else {
-      res.status(404).json({ error: 'No click data found' });
+      await db.collection('clicks').insertOne({ clickCount: 0 });
+      return res.json({ clickCount: 0 });
     }
   } catch (error) {
     console.error('Error fetching click count:', error);
@@ -25,18 +31,25 @@ router.get('/', getClickCount);
 async function updateClick(req, res) {
   try {
     const { clickCount } = req.body;
-
     const db = req.db;
+
+    if (!db) {
+      console.error('Database not initialized');
+      return res.status(500).json({ error: 'Database not initialized' });
+    }
+
+    console.log('Updating click count to:', clickCount);
     const result = await db.collection('clicks').updateOne(
       {},
-      { $set: { clickCount: clickCount } }
+      { $set: { clickCount: clickCount } },
+      { upsert: true }
     );
 
-    if (result.modifiedCount > 0) {
-      res.json({ message: 'Click data updated successfully', clickCount: clickCount });
-    } else {
-      res.status(404).json({ error: 'Click document not found' });
-    }
+    console.log('Update result:', result);
+    res.json({ 
+      message: 'Click data updated successfully', 
+      clickCount: clickCount 
+    });
   } catch (error) {
     console.error('Error updating click data:', error);
     res.status(500).json({ error: 'Internal server error' });
@@ -44,6 +57,5 @@ async function updateClick(req, res) {
 }
 
 router.post('/update', updateClick);
-
 
 module.exports = router;
