@@ -23,9 +23,10 @@ spec:
         - containerPort: 4000
         env:
         - name: MONGO_URI
-          value: mongo_uri
-        - name: DEBUG
-          value: "express:*"
+          valueFrom:
+            secretKeyRef:
+              name: mongodb-secret
+              key: uri
         readinessProbe:
           httpGet:
             path: /click
