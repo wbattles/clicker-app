@@ -39,4 +39,3 @@ jobs:
           aws s3 mv s3://${{ secrets.BUCKET_NAME }}/builds/previous s3://${{ secrets.BUCKET_NAME }}/backups/$(date +%Y-%m-%d) --recursive || true
           aws s3 mv s3://${{ secrets.BUCKET_NAME }}/builds/current s3://${{ secrets.BUCKET_NAME }}/builds/previous --recursive || true
           aws s3 cp client/build s3://${{ secrets.BUCKET_NAME }}/builds/current --recursive
-
