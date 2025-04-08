@@ -16,11 +16,19 @@ jobs:
         with:
           node-version: '18'
 
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: us-east-1
+
       - name: Build project
         run: |
           cd client
-
           npm install
-          BUILD_PATH=current npm run build
+          npm run build
 
-          ls
+      - name: Deploy to S3
+        run: |
+          aws s3 mv s3://click-front-test/builds/current/build s3://click-front-test/builds/previous --recursive || true
+          aws s3 cp client/build s3://click-front-test/builds/current/build --recursive
