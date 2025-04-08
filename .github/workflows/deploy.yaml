@@ -3,6 +3,10 @@ on:
     branches:
       - feature/secrets
 
+permissions:
+  id-token: write
+  contents: read
+  
 jobs:
   deploy:
     runs-on: ubuntu-latest
