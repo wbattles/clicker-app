@@ -34,6 +34,5 @@ jobs:
 
       - name: Deploy to S3
         run: |
-          aws s3 mv s3://click-frontend-test/builds/current/build s3://click-frontend-test/builds/previous --recursive || true
-          aws s3 cp client/build s3://click-frontend-test/builds/current/build --recursive
-          
+          aws s3 mv s3://click-frontend-test/builds/current s3://click-frontend-test/builds/previous --recursive || true
+          aws s3 cp client/build s3://click-frontend-test/builds/current --recursive
