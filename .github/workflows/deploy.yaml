@@ -36,3 +36,4 @@ jobs:
         run: |
           aws s3 mv s3://click-frontend-test/builds/current/build s3://click-frontend-test/builds/previous --recursive || true
           aws s3 cp client/build s3://click-frontend-test/builds/current/build --recursive
+          
