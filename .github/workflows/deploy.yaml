@@ -37,3 +37,4 @@ jobs:
           aws s3 mv s3://click-frontend-test/builds/previous s3://click-frontend-test/backups/$(date) --recursive || true
           aws s3 mv s3://click-frontend-test/builds/current s3://click-frontend-test/builds/previous --recursive || true
           aws s3 cp client/build s3://click-frontend-test/builds/current --recursive
+
