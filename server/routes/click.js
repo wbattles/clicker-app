@@ -4,9 +4,9 @@ var router = express.Router();
 async function getClickCount(req, res) {
   try {
     const db = req.db;
-    if (!db) {
-      console.error('Database not initialized');
-      return res.status(500).json({ error: 'Database not initialized' });
+    if (!db || !req.isDbConnected) {
+      console.error('Database not initialized or not connected');
+      return res.status(503).json({ error: 'Database not available' });
     }
 
     console.log('Fetching click count...');
@@ -33,9 +33,9 @@ async function updateClick(req, res) {
     const { clickCount } = req.body;
     const db = req.db;
 
-    if (!db) {
-      console.error('Database not initialized');
-      return res.status(500).json({ error: 'Database not initialized' });
+    if (!db || !req.isDbConnected) {
+      console.error('Database not initialized or not connected');
+      return res.status(503).json({ error: 'Database not available' });
     }
 
     console.log('Updating click count to:', clickCount);

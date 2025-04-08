@@ -1,0 +1,26 @@
+on:
+  push:
+    branches:
+      - feature/secrets
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18'
+
+      - name: Build project
+        run: |
+          cd client
+
+          npm install
+          BUILD_PATH=current npm run build
+
+          ls

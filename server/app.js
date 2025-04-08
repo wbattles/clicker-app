@@ -11,12 +11,23 @@ var cors = require('cors');
 var app = express();
 
 let db;
+let isDbConnected = false;
 
 const mongoURI = process.env.MONGO_URI;
-MongoClient.connect(mongoURI)
+const mongoOptions = {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  ssl: true,
+  tls: true,
+  tlsAllowInvalidCertificates: false,
+  serverSelectionTimeoutMS: 5000
+};
+
+MongoClient.connect(mongoURI, mongoOptions)
   .then(client => {
     console.log('Connected to MongoDB');
     db = client.db('clicker-app');
+    isDbConnected = true;
     return db.collection('clicks').updateOne(
       {},
       { $setOnInsert: { clickCount: 0 } },
@@ -35,6 +46,7 @@ app.use((req, res, next) => {
 
 app.use((req, res, next) => {
   req.db = db;
+  req.isDbConnected = isDbConnected;
   next();
 });
  
@@ -44,6 +56,18 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
+
+app.get('/readiness', (req, res) => {
+  if (isDbConnected) {
+    res.status(200).send('Ready');
+  } else {
+    res.status(503).send('Database not connected');
+  }
+});
 
 app.use('/click', clickRouter);
 
