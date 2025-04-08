@@ -1,8 +1,10 @@
 on:
   push:
     branches:
-      - feature/secrets
-
+      - main
+    paths:
+      - 'client/**'
+      
 permissions:
   id-token: write
   contents: read
