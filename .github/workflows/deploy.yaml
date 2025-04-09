@@ -5,6 +5,7 @@ on:
       - dev
     paths:
       - 'client/**'
+      - '.github/workflows/**'
       
 permissions:
   id-token: write
